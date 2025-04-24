@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gmail Dot Variations Generator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #007BFF, #00C6FF);
+      padding: 40px 20px;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+      width: 100%;
+      max-width: 500px;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+    h2 {
+      margin-bottom: 20px;
+      font-size: 24px;
+      font-weight: 600;
+      color: #333;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #007BFF;
+      border-radius: 10px;
+      margin-bottom: 15px;
+      font-size: 16px;
+      outline: none;
+      transition: 0.2s;
+    }
+    input[type="text"]:focus {
+      border-color: #0056b3;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      background: #007BFF;
+      color: white;
+      font-size: 16px;
+      font-weight: 600;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    .result {
+      margin-top: 25px;
+      max-height: 300px;
+      overflow-y: auto;
+      padding-right: 10px;
+    }
+    .email-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #f1f1f1;
+      padding: 10px;
+      margin-bottom: 8px;
+      border-radius: 10px;
+    }
+    .email-item input {
+      border: none;
+      background: transparent;
+      width: 80%;
+      font-size: 14px;
+      font-weight: 500;
+    }
+    .email-item button {
+      width: auto;
+      padding: 6px 10px;
+      font-size: 14px;
+      border-radius: 6px;
+      background: #28a745;
+    }
+    .email-item button:hover {
+      background: #1e7e34;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Gmail Dot Variations Generator</h2>
+    <input type="text" id="gmailInput" placeholder="Masukkan username Gmail (tanpa @gmail.com)">
+    <button onclick="generateVariations()">Generate</button>
+    <div class="result" id="result"></div>
+  </div>
+
+  <script>
+    function generateVariations() {
+      const input = document.getElementById('gmailInput').value.toLowerCase().replace(/\./g, '');
+      const resultDiv = document.getElementById('result');
+      resultDiv.innerHTML = '';
+      const variations = new Set();
+
+      const generate = (prefix, rest) => {
+        if (rest.length === 0) {
+          variations.add(prefix);
+          return;
+        }
+        generate(prefix + rest[0], rest.slice(1));
+        generate(prefix + '.' + rest[0], rest.slice(1));
+      };
+
+      if (!input || !/^[a-z0-9]+$/.test(input)) {
+        alert('Harap masukkan hanya karakter huruf atau angka tanpa simbol!');
+        return;
+      }
+
+      generate(input[0], input.slice(1));
+
+      const sortedVariations = Array.from(variations).sort().reverse();
+      sortedVariations.forEach(variation => {
+        const fullEmail = variation + '@gmail.com';
+        const div = document.createElement('div');
+        div.className = 'email-item';
+        div.innerHTML = `
+          <input type="text" readonly value="${fullEmail}" onclick="this.select()">
+          <button onclick="copyToClipboard('${fullEmail}')">Copy</button>
+        `;
+        resultDiv.appendChild(div);
+      });
+    }
+
+    function copyToClipboard(text) {
+      navigator.clipboard.writeText(text).then(() => alert('Disalin ke clipboard!'));
+    }
+  </script>
+</body>
+</html>
