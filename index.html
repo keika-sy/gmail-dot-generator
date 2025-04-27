@@ -77,6 +77,7 @@
       padding: 10px;
       margin-bottom: 8px;
       border-radius: 10px;
+      position: relative;
     }
     .email-item input {
       border: none;
@@ -94,6 +95,18 @@
     }
     .email-item button:hover {
       background: #1e7e34;
+    }
+    .copy-text {
+      position: absolute;
+      color: #28a745;
+      font-size: 14px;
+      font-weight: 500;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      right: 80px; /* Menempatkan teks di samping tombol */
+    }
+    .copy-text.show {
+      opacity: 1;
     }
   </style>
 </head>
@@ -135,14 +148,21 @@
         div.className = 'email-item';
         div.innerHTML = `
           <input type="text" readonly value="${fullEmail}" onclick="this.select()">
-          <button onclick="copyToClipboard('${fullEmail}')">Copy</button>
+          <button onclick="copyToClipboard('${fullEmail}', this)">Copy</button>
+          <span class="copy-text">Copied!</span>
         `;
         resultDiv.appendChild(div);
       });
     }
 
-    function copyToClipboard(text) {
-      navigator.clipboard.writeText(text).then(() => alert('Disalin ke clipboard!'));
+    function copyToClipboard(text, button) {
+      navigator.clipboard.writeText(text).then(() => {
+        const copyText = button.nextElementSibling;
+        copyText.classList.add('show');
+        setTimeout(() => {
+          copyText.classList.remove('show');
+        }, 1000); // Animasi hilang setelah 1 detik
+      });
     }
   </script>
 </body>
